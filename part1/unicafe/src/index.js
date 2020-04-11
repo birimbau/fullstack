@@ -1,6 +1,45 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
+const Statistic = ({ name, value }) => {
+  return (
+    <p>
+      {name} {value}
+    </p>
+  );
+};
+
+const Statistics = ({ good, neutral, bad }) => {
+  const average =
+    good + neutral + bad > 0
+      ? (good * 1 + neutral * 0 + bad * -1) / (good + neutral + bad)
+      : '---';
+  const positive =
+    good + neutral + bad > 0 ? (good / (good + neutral + bad)) * 100 : 0;
+
+  if (good + neutral + bad === 0) {
+    return <p>No feedback given</p>;
+  }
+
+  return (
+    <>
+      <Statistic name='good' value={good} />
+      <Statistic name='neutral' value={neutral} />
+      <Statistic name='bad' value={bad} />
+      <Statistic name='average' value={average} />
+      <Statistic name='positive' value={`${positive} %`} />
+    </>
+  );
+};
+
+const Button = ({ feedback, onClick }) => {
+  return (
+    <button type='button' onClick={onClick}>
+      {feedback}
+    </button>
+  );
+};
+
 const App = () => {
   // save clicks of each button to own state
   const [good, setGood] = useState(0);
@@ -23,19 +62,11 @@ const App = () => {
   return (
     <div>
       <h1>give feedback</h1>
-      <button type='button' onClick={handleClick('good')}>
-        good
-      </button>
-      <button type='button' onClick={handleClick('neutral')}>
-        neutral
-      </button>
-      <button type='button' onClick={handleClick('bad')}>
-        bad
-      </button>
+      <Button feedback='good' onClick={handleClick('good')} />
+      <Button feedback='neutral' onClick={handleClick('neutral')} />
+      <Button feedback='bad' onClick={handleClick('bad')} />
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
