@@ -21,7 +21,6 @@ const App = (props) => {
     copy[selected] += 1;
     setPoints(copy);
   };
-  console.log('Hey hey', Math.max.apply(null, points));
   return (
     <div>
       <h1>Anecdote of the day</h1>
