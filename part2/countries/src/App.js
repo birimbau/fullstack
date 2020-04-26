@@ -33,7 +33,7 @@ function App() {
       {filteresCountries.length <= 10 && filteresCountries.length > 1 && (
         <>
           {filteresCountries.map((country) => (
-            <div>
+            <div key={country.name}>
               <span key={country.name}>{country.name}</span>{' '}
               <button
                 onClick={() => {
