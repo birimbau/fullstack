@@ -34,7 +34,23 @@ const App = () => {
     const index = persons.findIndex((x) => x.name === newName);
 
     if (index !== -1) {
-      alert(`${newName} is already added to phonebook`);
+      const update = window.confirm(
+        `${newName} is already added to phonebook, update?`
+      );
+      if (update) {
+        phoneNumberService
+          .update(persons[index], { name: newName, number: newNumber })
+          .then((response) => {
+            setPersons(
+              persons.map((pers) => {
+                if (pers.id !== response.id) {
+                  return pers;
+                }
+                return response;
+              })
+            );
+          });
+      }
     } else {
       phoneNumberService
         .create({ name: newName, number: newNumber })
@@ -59,7 +75,22 @@ const App = () => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Person persons={persons} filter={filter} />
+      <Person
+        persons={persons}
+        filter={filter}
+        deletePerson={(person) => {
+          const deletePerson = window.confirm(`Delete ${person.name} ?`);
+          if (deletePerson) {
+            phoneNumberService.deletePerson(person).then(() => {
+              const index = persons.findIndex((x) => x.id === person.id);
+              setPersons([
+                ...persons.slice(0, index),
+                ...persons.slice(index + 1),
+              ]);
+            });
+          }
+        }}
+      />
     </div>
   );
 };

@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-const Person = ({ persons, filter }) => {
+const Person = ({ persons, filter, deletePerson }) => {
   return (
     <>
       {persons
         .filter((x) => x.name.toLowerCase().includes(filter.toLowerCase()))
         .map((person) => (
-          <p key={person.name}>
-            {person.name} {person.number}
-          </p>
+          <Fragment key={person.id}>
+            <p>
+              {person.name} {person.number}
+            </p>
+            <button onClick={() => deletePerson(person)}>Delete</button>
+          </Fragment>
         ))}
     </>
   );
