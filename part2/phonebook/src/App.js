@@ -6,6 +6,7 @@ import phoneNumberService from './services/phoneNumber';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+  const [info, setInfo] = useState(null);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
@@ -40,15 +41,25 @@ const App = () => {
       if (update) {
         phoneNumberService
           .update(persons[index], { name: newName, number: newNumber })
-          .then((response) => {
+          .then((data) => {
             setPersons(
               persons.map((pers) => {
-                if (pers.id !== response.id) {
+                if (pers.id !== data.id) {
                   return pers;
                 }
-                return response;
+                return data;
               })
             );
+            setInfo({ type: 'info', text: `Updated ${data.name}` });
+            setTimeout(() => {
+              setInfo(null);
+            }, 3000);
+          })
+          .catch(() => {
+            setInfo({
+              type: 'error',
+              text: `${newName} was already deleted`,
+            });
           });
       }
     } else {
@@ -56,6 +67,10 @@ const App = () => {
         .create({ name: newName, number: newNumber })
         .then((data) => {
           setPersons(persons.concat(data));
+          setInfo({ type: 'info', text: `Added ${data.name}` });
+          setTimeout(() => {
+            setInfo(null);
+          }, 3000);
         });
       setNewName('');
       setNewNumber('');
@@ -65,6 +80,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {info && <div className={info.type}>{info.text}</div>}
+
       <Filter filter={filter} handleChangeFilter={handleChangeFilter} />
       <h2>Add a new</h2>
       <PersonForm
